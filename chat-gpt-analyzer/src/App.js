@@ -1,13 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UploadPage from './pages/UploadPage';
-import ChatPage from './pages/ChatPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PDFUploadPage from './components/PDFUploadPage';
+import ChatPage from './pages/ChatPage';  // Verifica que esta ruta sea correcta
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<UploadPage />} />
+        <Route path="/" element={<PDFUploadPage />} />
         <Route path="/chat" element={<ChatPage />} />
       </Routes>
     </Router>
