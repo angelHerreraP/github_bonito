@@ -25,20 +25,17 @@ const PDFUploadPage = () => {
         throw new Error("No se seleccionó un archivo.");
       }
 
-      const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-      const targetUrl = "http://108.163.157.73:8000/pdf/upload";
-      
       const formData = new FormData();
-      formData.append("file", selectedFile); // Asegúrate de que el archivo esté correctamente asignado
-      
-      const response = await fetch(proxyUrl + targetUrl, {
+      formData.append("file", selectedFile); // Agrega el archivo al FormData
+
+      const response = await fetch("http://108.163.157.73:8000/pdf/upload", {
         method: "POST",
         body: formData,
         headers: {
           "Accept": "application/json",
         },
+        mode: "no-cors"
       });
-      
 
       // Verifica si la respuesta fue exitosa
       if (!response.ok) {
