@@ -1,60 +1,57 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa el hook useNavigate
-import { Upload } from 'lucide-react'; // Icono de subida de archivo
-import { Button } from '../components/ui/Button'; // Componente de botón
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card'; // Componentes de UI
+import { useNavigate } from 'react-router-dom';
+import { Upload } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 
 const PDFUploadPage = () => {
-  const [selectedFile, setSelectedFile] = useState(null);  // Estado para almacenar el archivo seleccionado
-  const [uploadProgress, setUploadProgress] = useState(0); // Estado para el progreso de carga (si lo necesitas)
-  const navigate = useNavigate(); // Inicializa el hook useNavigate para redirigir
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
-      setSelectedFile(file);  // Almacena el archivo PDF en el estado
+      setSelectedFile(file);
+      setErrorMessage(''); // Limpiar cualquier mensaje de error previo
     } else {
-      alert('Por favor, selecciona solo archivos PDF'); // Alerta si el archivo no es PDF
+      alert('Por favor, selecciona solo archivos PDF');
     }
   };
 
   async function handleFileUpload() {
     try {
-      // Verifica si un archivo ha sido seleccionado
       if (!selectedFile) {
-        throw new Error("No se seleccionó un archivo.");
+        setErrorMessage("No se seleccionó un archivo.");
+        return;
       }
 
       const formData = new FormData();
-      formData.append("file", selectedFile); // Agrega el archivo al FormData
+      formData.append("file", selectedFile);
 
       const response = await fetch("http://108.163.157.73:8000/pdf/upload", {
         method: "POST",
         body: formData,
-        headers: {
-          "Accept": "application/json",
-        },
-        mode: "no-cors"
+        // Elimina el modo "no-cors" y los headers de Accept
       });
 
-      // Verifica si la respuesta fue exitosa
-      if (!response.ok) {
-        throw new Error(`Error al subir el archivo: ${response.statusText}`);
-      }
-
-      const data = await response.json();  // Obtiene la respuesta en formato JSON
-
-      if (data && data.message) {
-        console.log("Respuesta del servidor:", data.message);
-        // Navega a la página de chat si la carga es exitosa
+      // Verificar el estado de la respuesta
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Respuesta del servidor:", data);
         navigate('/chat');
       } else {
-        throw new Error("Respuesta inesperada del servidor.");
+        // Manejar errores de respuesta
+        const errorText = await response.text();
+        setErrorMessage(`Error al subir el archivo: ${errorText}`);
+        console.error("Error en la subida:", errorText);
       }
     } catch (error) {
-      console.error("Error al subir el archivo:", error.message); // Muestra el error si ocurre
+      setErrorMessage(`Error al subir el archivo: ${error.message}`);
+      console.error("Error al subir el archivo:", error);
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center p-4">
@@ -82,10 +79,17 @@ const PDFUploadPage = () => {
               {selectedFile && <p className="text-sm text-gray-600">{selectedFile.name}</p>}
             </div>
           </div>
+          
+          {errorMessage && (
+            <div className="text-red-500 text-sm mt-2 text-center">
+              {errorMessage}
+            </div>
+          )}
+          
           <Button 
             className="mt-4 w-full" 
             onClick={handleFileUpload}
-            disabled={!selectedFile} // Desactiva el botón si no hay archivo seleccionado
+            disabled={!selectedFile}
           >
             Subir archivo
           </Button>
