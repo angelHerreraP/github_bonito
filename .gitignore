@@ -1,23 +1,39 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# 🚀 Node.js y paquetes de dependencias
+/node_modules/  # Archivos de dependencias, los instala `npm install`
+/.pnpm-store/  # Caché de pnpm (si usas pnpm)
+/.pnp/
+/.pnp.js
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# ⚙️ Archivos de configuración y entorno
+.env*  # Ignora todos los archivos .env (contraseñas, API keys)
+/config/
+/dist/
+/out/
+/build/  # Archivos generados por build en React
 
-# testing
-/coverage
+# 🧪 Archivos de testing
+/coverage/  # Reportes de cobertura de pruebas
 
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# 💻 Archivos del sistema y logs
+.DS_Store  # macOS
+Thumbs.db  # Windows
+*.log      # Archivos de log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# 🔥 Cachés y archivos temporales
+/.eslintcache
+/.parcel-cache
+/.turbo
+/.next  # Si usas Next.js
+/.vercel  # Si usas Vercel
+/.vscode/  # Configuración de VSCode (opcional)
+/.idea/  # Configuración de WebStorm (opcional)
+
+# 📦 Archivos innecesarios en GitHub
+*.swp  # Archivos de swap en Vim
+*.swo
+*.swn
+*.bak
+*.tmp
