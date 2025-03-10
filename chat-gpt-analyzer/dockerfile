@@ -1,0 +1,29 @@
+# Etapa 1: Construcción de la aplicación
+FROM node:16 AS build
+
+# Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar el package.json y package-lock.json (o yarn.lock) para instalar dependencias
+COPY package*.json ./
+
+# Instalar dependencias
+RUN npm install
+
+# Copiar el resto de la aplicación
+COPY . .
+
+# Crear los archivos de construcción para producción
+RUN npm run build
+
+# Etapa 2: Servir la aplicación con un servidor web ligero
+FROM nginx:alpine
+
+# Copiar los archivos construidos a la carpeta pública de nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Exponer el puerto en el que nginx sirve la aplicación
+EXPOSE 80
+
+# Comando para iniciar nginx cuando el contenedor se ejecute
+CMD ["nginx", "-g", "daemon off;"]
