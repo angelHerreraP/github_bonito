@@ -4,6 +4,7 @@ import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
+import RegisterPage from "./pages/Register";
 
 const PrivateRoute = ({ children }) => {
   const { token } = useContext(AuthContext);
@@ -15,6 +16,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/upload"
